@@ -1,5 +1,6 @@
 package com.fooddelivery.backend.service.impl;
 
+import com.fooddelivery.backend.dto.LoginDTO;
 import com.fooddelivery.backend.entity.User;
 import com.fooddelivery.backend.repository.UserRepository;
 import com.fooddelivery.backend.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,6 +42,30 @@ public class UserServiceImpl implements UserService {
     public String deleteById(Long id) {
     	userRepository.deleteById(id);
     	return "User deleted";
+    }
+    
+    @Override
+    public String loginUser(LoginDTO loginDTO) {
+        // Step 1: Get user by email
+        Optional<User> userOpt = userRepository.findByEmail(loginDTO.getEmail());
+
+        if (userOpt.isEmpty()) {
+            return "User not found";
+        }
+
+        User user = userOpt.get();
+
+        // Step 2: Match password
+        boolean isPasswordMatch = passwordEncoder.matches(
+            loginDTO.getPassword(),
+            user.getPassword()
+        );
+
+        if (!isPasswordMatch) {
+            return "Incorrect password";
+        }
+
+        return "Login successful";
     }
 
 }

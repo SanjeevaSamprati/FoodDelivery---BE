@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooddelivery.backend.dto.LoginDTO;
 import com.fooddelivery.backend.entity.User;
 import com.fooddelivery.backend.service.UserService;
 
@@ -43,5 +44,10 @@ public class UserController {
 	@DeleteMapping("/delete/{id}")
 	public String deleteById(@PathVariable Long id) {
 		return userService.deleteById(id);
+	}
+	
+	@PostMapping("/login")
+	public String loginUser(@RequestBody LoginDTO loginDTO) {
+		return userService.loginUser(loginDTO);
 	}
 }
