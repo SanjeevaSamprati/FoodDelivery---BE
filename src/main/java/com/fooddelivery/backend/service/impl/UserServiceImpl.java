@@ -2,6 +2,7 @@ package com.fooddelivery.backend.service.impl;
 
 import com.fooddelivery.backend.dto.LoginDTO;
 import com.fooddelivery.backend.entity.User;
+import com.fooddelivery.backend.exception.ResourceNotFoundException;
 import com.fooddelivery.backend.repository.UserRepository;
 import com.fooddelivery.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) {
         return userRepository.findById(id)
-               .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+               .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id + " Not found"));
     }
     
     @Override
@@ -47,19 +48,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String loginUser(LoginDTO loginDTO) {
         // Step 1: Get user by email
-        Optional<User> userOpt = userRepository.findByEmail(loginDTO.getEmail());
-
-        if (userOpt.isEmpty()) {
-            return "User not found";
-        }
-
-        User user = userOpt.get();
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new ResourceNotFoundException("No User found with email  " + loginDTO.getEmail()));
 
         // Step 2: Match password
-        boolean isPasswordMatch = passwordEncoder.matches(
-            loginDTO.getPassword(),
-            user.getPassword()
-        );
+		boolean isPasswordMatch = passwordEncoder.matches(loginDTO.getPassword(), user.getPassword());
 
         if (!isPasswordMatch) {
             return "Incorrect password";
