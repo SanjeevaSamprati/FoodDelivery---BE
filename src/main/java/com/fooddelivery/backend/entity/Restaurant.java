@@ -1,75 +1,34 @@
 package com.fooddelivery.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "Restaurant")
+@Table(name = "restaurants")
 public class Restaurant {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
-	private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String location;
+    @NotBlank(message = "Restaurant name is required")
+    private String name;
 
-	private Long contactNo;
-	
-	private String email;
+    @NotBlank(message = "Location is required")
+    private String location;
 
-	private Float rating;
+    @Pattern(regexp = "\\d{10}", message = "Contact number must be 10 digits")
+    @Column(nullable = false, unique = true)
+    private String contactNo;
 
-	public Long getId() {
-		return id;
-	}
+    @Email(message = "Invalid email format")
+    @Column(nullable = false, unique = true)
+    private String email;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private Float rating;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public Long getContactNo() {
-		return contactNo;
-	}
-
-	public void setContactNo(Long contactNo) {
-		this.contactNo = contactNo;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Float getRating() {
-		return rating;
-	}
-
-	public void setRating(Float rating) {
-		this.rating = rating;
-	}
-
+    // Getters and Setters...
 }
